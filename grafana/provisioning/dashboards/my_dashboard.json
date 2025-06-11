@@ -1,0 +1,107 @@
+{
+  "title": "File Upload/Download Stats",
+  "timezone": "browser",
+  "refresh": "5s",
+  "schemaVersion": 36,
+  "version": 1,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Upload Rate (uploads per second)",
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(uploaded_files_total[1m]))",
+          "refId": "A",
+          "legendFormat": "Uploads/sec"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "timeseries",
+      "title": "Upload Count per Minute",
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(uploaded_files_total[1m]))",
+          "refId": "B",
+          "legendFormat": "Uploads/min"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "timeseries",
+      "title": "Download Rate (downloads per second)",
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(downloaded_files_total[1m]))",
+          "refId": "C",
+          "legendFormat": "Downloads/sec"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "timeseries",
+      "title": "Download Count per Minute",
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(downloaded_files_total[1m]))",
+          "refId": "D",
+          "legendFormat": "Downloads/min"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+    "type": "stat",
+      "title": "Total Uploaded Size (bytes)",
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "uploaded_file_size_total_bytes",
+          "refId": "C"
+        }
+      ],
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        }
+      }
+    }
+  ]
+}

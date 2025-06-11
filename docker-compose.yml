@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+    environment:
+      - DEFAULT_CLIENT_MAX_BODY_SIZE=100m
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx-custom.conf:/etc/nginx/conf.d/nginx-custom.conf:ro  # NGINX config for data limit
+    networks:
+      - backend_net
+
+
+  backend:
+    build: ./backend
+    expose:
+      - "8000"
+    environment:
+      - VIRTUAL_HOST=localhost
+      - VIRTUAL_PORT=8000
+      - VIRTUAL_CLIENT_MAX_BODY_SIZE=100m
+    volumes:
+      - ./uploads:/app/uploads   # Storage for uploaded files
+    networks:
+      - backend_net
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - backend_net
+
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/provisioning/dashboards:/var/lib/grafana/dashboards
+    ports:
+      - "3000:3000"
+    networks:
+      - backend_net
+
+networks:
+  backend_net:
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  uploads:

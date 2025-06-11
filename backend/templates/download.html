@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Download file</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header>
+    <img src="{{ url_for('static', filename='Logo.svg') }}" alt="CloudTransfer logo" class="logo"/>
+  </header>
+
+  <main class="link-container">
+    <input class="form-input" value="{{ request.host_url ~ 'file/' ~ filename }}" readonly />
+
+    <button class="generate" onclick="window.location.href='{{ url_for('serve_file', filename=filename) }}'">
+      download
+    </button>
+
+    <p class="text">your file is ready to download</p>
+  </main>
+</body>
+</html>
